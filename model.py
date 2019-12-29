@@ -8,17 +8,21 @@ print("hi")
 class net:
     def __init__(self):
         self.input_size=512
+        inputs=keras.Input(shape=(512,512,3))
+        start = layers.Conv2D(filters = 3,kernel_size=1, strides=1)(inputs)
+        start = layers.MaxPooling2D()(start)
+        hg1 = self.hg_module(start)
+        hg2 = self.hg_module(hg1)
+        
+        self.model = keras.Model(inputs=inputs,output=hg2)
 
     def forward(self,input):
         '''
         input needs to be size of (b ,512, 512, 3)
         '''
-        start = layers.Conv2D(filters = 3,kernel_size=1, strides=1)(input)
-        start = layers.MaxPooling2D()(start)
-        hg1 = self.hg_module(start)
-        hg2 = self.hg_module(hg1)
+        output=self.model(input)
 
-        return hg2
+        return output
 
 
     def hg_module(self,input):#, input):
